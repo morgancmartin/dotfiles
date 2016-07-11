@@ -21,4 +21,6 @@
 !.gitignore
 !.gitignore_global
 
+!.spacemacs
+
 !README.md

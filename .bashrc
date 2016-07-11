@@ -37,6 +37,7 @@ export VISUAL="vim"
 export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 export PATH="$PATH:$HOME/.npm-global/bin" # Add NPM to PATH
 
+# Set gitignore on or off
 function githome {
     if [ $1 ]; then
         if [ $1 == 'disable' ]; then
@@ -53,3 +54,7 @@ function githome {
     fi
 }
 alias githome='githome'
+
+# Set up an alias for copying and pasting
+alias "c=xclip"
+alias "v=xclip -o"
