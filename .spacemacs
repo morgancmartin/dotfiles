@@ -1,6 +1,5 @@
 ;; -*- mode: emacs-lisp -*-
 ;; This file is loaded by Spacemacs at startup.
-;; ths where to look for configuration layers.
 ;; It must be stored in your home directory.
 
 (defun dotspacemacs/layers ()
@@ -9,46 +8,49 @@ You should not put any user code in this function besides modifying the variable
 values."
   (setq-default
    ;; Base distribution to use. This is a layer contained in the directory
-   ;; `+distribution'. For now available distributions are `spacemacs-base'
+   ;; `+distribution'. F(setq wakatime-python-bin "/path/to/python")or now available distributions are `spacemacs-base'
    ;; or `spacemacs'. (default 'spacemacs)
    dotspacemacs-distribution 'spacemacs
+   ;; List of additional paths where to look for configuration layers.
    ;; Paths must have a trailing slash (i.e. `~/.mycontribs/')
    dotspacemacs-configuration-layer-path '()
    ;; List of configuration layers to load. If it is the symbol `all' instead
    ;; of a list then all discovered layers will be installed.
    dotspacemacs-configuration-layers
    '(
+     yaml
      ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
      ;; Uncomment some layer names and press <SPC f e R> (Vim style) or
      ;; <M-m f e R> (Emacs style) to install them.
      ;; ----------------------------------------------------------------
-     ;; auto-completion
-     ;; better-defaults
-     emacs-lisp
-     themes-megapack
-     ruby-on-rails
-     git
-     spotify
-     org
      auto-completion
-     ruby
+     better-defaults
+     emacs-lisp
+     git
+     markdown
+     org
+     (ruby :variables
+           ruby-enable-enh-ruby-mode t
+           ruby-version-manager 'rvm
+           ruby-test-runner 'ruby-test)
+     (shell :variables
+            shell-default-height 30
+            shell-default-position 'bottom)
+     spell-checking
+     syntax-checking
+     version-control
      html
-     ;; git
-     ;; markdown
-     ;; org
-     ;; (shell :variables
-     ;;        shell-default-height 30
-     ;;        shell-default-position 'bottom)
-     ;; spell-checking
-     ;; syntax-checking
-     ;; version-control
+     javascript
+     themes-megapack
+     ranger
+     ycmd
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
-   dotspacemacs-additional-packages '(column-enforce-mode, rcodetools)
+   dotspacemacs-additional-packages '()
    ;; A list of packages and/or extensions that will not be install and loaded.
    dotspacemacs-excluded-packages '()
    ;; If non-nil spacemacs will delete any orphan packages, i.e. packages that
@@ -103,14 +105,15 @@ values."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(railscasts
-                         spacemacs-dark
-                         spacemacs-light
-                         solarized-light
-                         solarized-dark
-                         leuven
+   dotspacemacs-themes '(
+                         ;; ujelly
+                         sanityinc-tomorrow-night
+                         graham
+                         railscasts
+                         zonokai-blue
+                         molokai
                          monokai
-                         zenburn)
+                         )
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font. `powerline-scale' allows to quickly tweak the mode-line
@@ -215,7 +218,7 @@ values."
    ;; If non nil line numbers are turned on in all `prog-mode' and `text-mode'
    ;; derivatives. If set to `relative', also turns on relative line numbers.
    ;; (default nil)
-   dotspacemacs-line-numbers nil
+   dotspacemacs-line-numbers t
    ;; If non-nil smartparens-strict-mode will be enabled in programming modes.
    ;; (default nil)
    dotspacemacs-smartparens-strict-mode nil
@@ -258,13 +261,44 @@ layers configuration.
 This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
-  (defun dotspacemacs-configuration-layers ()
-    '((ruby :variables ruby-version-manager 'rvm)))
-  (rvm-use-default)
-  (add-hook 'prog-mode-hook 'column-enforce-mode)
-  (add-hook 'text-mode-hook 'column-enforce-mode)
-  (setq column-enforce-column 70)
+  ;; (setq-default evil-escape-key-sequence "ESC")
+  (setq helm-ff-auto-update-initial-value t)
+  (setq helm-projectile-on t)
+  (setq web-mode-markup-indent-offset 2)
+  (setq web-mode-css-indent-offset 2)
+  (setq-default js2-basic-offset 2)
+  (setq-default js-indent-level 2)
+  ;; store all backup and autosave files in the tmp dir
+  (setq backup-directory-alist
+        `((".*" . ,temporary-file-directory)))
+  (setq auto-save-file-name-transforms
+        `((".*" ,temporary-file-directory t)))
+  (setq-default dotspacemacs-configuration-layers
+                '(ranger :variables
+                         ranger-show-preview t))
+  (setq ranger-cleanup-eagerly t)
+  (setq ranger-show-dotfiles t)
+  (setq ranger-parent-depth 2)
+  (setq ranger-width-parents 0.12)
+  (setq ranger-max-parent-width 0.12)
+  (setq ranger-ignored-extensions '("mkv" "iso" "mp4"))
+  (setq ranger-max-preview-size 10)
+  (setq x-select-enable-clipboard t)
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (yaml-mode org minitest json-snatcher json-reformat haml-mode gitignore-mode fringe-helper git-gutter+ pos-tip web-completion-data dash-functional tern inf-ruby uuidgen rake pug-mode org-projectile org-download mwim livid-mode skewer-mode simple-httpd link-hint git-link flyspell-correct-helm flyspell-correct eyebrowse evil-visual-mark-mode evil-unimpaired evil-ediff eshell-z dumb-jump darkokai-theme column-enforce-mode flycheck-ycmd company-ycmd f ycmd request-deferred deferred wakatime-mode ranger zonokai-theme zenburn-theme zen-and-art-theme underwater-theme ujelly-theme twilight-theme twilight-bright-theme twilight-anti-bright-theme tronesque-theme toxi-theme tao-theme tangotango-theme tango-plus-theme tango-2-theme sunny-day-theme sublime-themes subatomic256-theme subatomic-theme stekene-theme spacegray-theme soothe-theme soft-stone-theme soft-morning-theme soft-charcoal-theme smyx-theme seti-theme reverse-theme purple-haze-theme professional-theme planet-theme phoenix-dark-pink-theme phoenix-dark-mono-theme pastels-on-dark-theme organic-green-theme omtose-phellack-theme oldlace-theme occidental-theme obsidian-theme noctilux-theme niflheim-theme naquadah-theme mustang-theme monokai-theme monochrome-theme molokai-theme moe-theme minimal-theme material-theme majapahit-theme lush-theme light-soap-theme jbeans-theme jazz-theme ir-black-theme inkpot-theme heroku-theme hemisu-theme hc-zenburn-theme gruvbox-theme gruber-darker-theme grandshell-theme gotham-theme gandalf-theme flatui-theme flatland-theme firebelly-theme farmhouse-theme espresso-theme dracula-theme django-theme darktooth-theme darkmine-theme darkburn-theme dakrone-theme cyberpunk-theme colorsarenice-theme color-theme-sanityinc-tomorrow color-theme-sanityinc-solarized clues-theme cherry-blossom-theme busybee-theme bubbleberry-theme birds-of-paradise-plus-theme badwolf-theme apropospriate-theme anti-zenburn-theme ample-zen-theme ample-theme alect-themes afternoon-theme request ws-butler window-numbering web-mode spacemacs-theme spaceline persp-mode org-plus-contrib open-junk-file neotree magit-gitflow leuven-theme less-css-mode js2-refactor indent-guide help-fns+ helm-themes helm-projectile helm-make projectile helm-descbinds helm-c-yasnippet helm-ag google-translate git-messenger exec-path-from-shell evil-surround evil-search-highlight-persist evil-matchit evil-iedit-state evil-exchange enh-ruby-mode emmet-mode diff-hl company-quickhelp bundler auto-yasnippet ace-link ace-jump-helm-line auto-complete avy anzu smartparens flycheck git-gutter company helm helm-core markdown-mode alert magit magit-popup git-commit with-editor hydra dash quelpa package-build use-package which-key evil yasnippet xterm-color web-beautify volatile-highlights vi-tilde-fringe undo-tree toc-org tagedit smooth-scrolling smeargle slim-mode shell-pop scss-mode sass-mode rvm ruby-tools ruby-test-mode rubocop rspec-mode robe restart-emacs rbenv rainbow-delimiters railscasts-theme powerline popwin popup pkg-info paradox page-break-lines orgit org-repo-todo org-present org-pomodoro org-bullets multiple-cursors multi-term move-text mmm-mode markdown-toc macrostep lorem-ipsum log4e linum-relative json-mode js2-mode js-doc jade-mode info+ iedit ido-vertical-mode hungry-delete htmlize hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-swoop helm-mode-manager helm-gitignore helm-flyspell helm-flx helm-css-scss helm-company goto-chg golden-ratio gnuplot gntp gitconfig-mode gitattributes-mode git-timemachine git-gutter-fringe git-gutter-fringe+ gh-md flycheck-pos-tip flx-ido fill-column-indicator fancy-battery expand-region evil-visualstar evil-tutor evil-numbers evil-nerd-commenter evil-mc evil-magit evil-lisp-state evil-indent-plus evil-escape evil-args evil-anzu eval-sexp-fu eshell-prompt-extras esh-help elisp-slime-nav diminish define-word company-web company-tern company-statistics coffee-mode clean-aindent-mode chruby buffer-move bracketed-paste bind-key auto-highlight-symbol auto-dictionary auto-compile async aggressive-indent adaptive-wrap ace-window ac-ispell))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
